@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  cloud_aggregator:
+    build: .
+    command: python server/aggregator.py
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  edge_node_1:
+    build: .
+    command: python clients/pqc_client.py
+    depends_on:
+      - cloud_aggregator
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
